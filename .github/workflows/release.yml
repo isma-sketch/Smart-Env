@@ -1,9 +1,11 @@
 name: Release Binaries
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -16,13 +18,13 @@ jobs:
         with:
           go-version: '1.22'
 
-      - name: Build Multi-Platform Binaries
+      - name: Build Binaries
         run: |
           GOOS=windows GOARCH=amd64 go build -o smart-env-windows-amd64.exe ./cmd/smart-env
           GOOS=linux GOARCH=amd64 go build -o smart-env-linux-amd64 ./cmd/smart-env
           GOOS=darwin GOARCH=arm64 go build -o smart-env-darwin-arm64 ./cmd/smart-env
 
-      - name: Create GitHub Release
+      - name: Upload Binaries to Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
